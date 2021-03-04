@@ -28,9 +28,57 @@ class CalcControler{
         });
     }
     
+    getLastOperation(){
+        let newVar = this._operation[this._operation.length-1];
+        return newVar;
+    }
+
+
+    isOperator(value){
+        return (['+', '-', '*', '%', '/'].indexOf(value) > -1); 
+    }
+     
+    setLastOperation(value){
+
+        this._operation[this._operation.length - 1] = value;
+
+    }
+
     
     addOperation(value){
-        this._operation.push(value);
+
+        if (isNaN(this.getLastOperation())){
+
+            if(this.isOperator(value)){
+
+                this.setLastOperation(value);
+                //troca o operador
+            }else if(isNaN(value)){
+
+                console.log(value);
+
+            } else {
+
+                this._operation.push(value);
+
+            }
+
+
+        }else {
+            let newValue = this.getLastOperation().toString() + value.toString();
+            this.setLastOperation(parseInt(newValue));
+            console.log( "É um numero:" + newValue);
+
+
+
+        }
+
+
+
+        console.log( "fim do IF, arrey completo: " + this._operation);
+        this.getLastOperation();
+
+    
     }
     
     clearAll(){
@@ -54,24 +102,31 @@ class CalcControler{
                 console.log(this._operation);
                 break;
             case 'porcento':
+                this.addOperation('%');
                 console.log(this._operation);
                 break;
             case 'soma':
+                this.addOperation('+');
                 console.log(this._operation);
                 break;
             case 'divisao':
+                this.addOperation('/');
                 console.log(this._operation);
                 break;
             case 'multiplicacao':
+                this.addOperation('*');
                 console.log(this._operation);
             break;
             case 'subtracao':
+                this.addOperation('-');
                 console.log(this._operation);
                 break;
             case 'igual':
+                this.addOperation('=');
                 console.log(this._operation);
                 break;
             case 'ponto':
+                this.addOperation('.');
                 console.log(this._operation);
                 break;
             case '1':
@@ -84,11 +139,9 @@ class CalcControler{
             case '8':
             case '9':
             case '0':
-                this.addOperation(parseInt(value));
-                console.log(this._operation)
-                
-                
-                  
+                this.addOperation(parseInt(value));    
+       
+
             default:
             this.setError();                
             break;
