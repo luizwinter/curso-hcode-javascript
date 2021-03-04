@@ -5,6 +5,8 @@ class CalcControler{
         this._displayEl = document.querySelector("#display");
         this._dateEl = document.querySelector("#data");
         this._timeEl = document.querySelector("#hora");
+        this._displayCalcEl = document.querySelector("#display");
+
         this._currentDate;
         this.inicialize();
         this.initButtonsEvents()
@@ -45,6 +47,40 @@ class CalcControler{
     }
 
     
+    pushOperation(value){
+        this._operation.push(value);
+        if(this._operation.length > 3){
+            
+            this.calc();
+
+        }
+    }
+    
+    calc(){
+        let last = this._operation.pop();
+        
+        let result = eval(this._operation.join(""));
+        this._operation = [result, last]
+        document.querySelector("#display").innerHTML = result;
+
+    }
+    
+    
+    setLastNumberToDisplay(){
+        let lastNumber;
+        
+        for(let i = this._operation.length-1; i >= 0; i--){
+            if(!this.isOperator(this._operation[i])){
+                
+                lastNumber = this._operation[i];
+
+                break;
+            }
+        }
+        document.querySelector("#display").innerHTML = lastNumber;
+    }
+    
+    
     addOperation(value){
 
         if (isNaN(this.getLastOperation())){
@@ -59,23 +95,24 @@ class CalcControler{
 
             } else {
 
-                this._operation.push(value);
-
+                this.pushOperation(value);
+                this.setLastNumberToDisplay();                
             }
 
 
         }else {
-            let newValue = this.getLastOperation().toString() + value.toString();
-            this.setLastOperation(parseInt(newValue));
-            console.log( "É um numero:" + newValue);
+            
+            if(this.isOperator(value)){
+                
+                this.pushOperation(value);
+                
+            } else {
+                     let newValue = this.getLastOperation().toString() + value.toString();
+                    this.setLastOperation(parseInt(newValue));
+                
+                this.setLastNumberToDisplay();
+            }}
 
-
-
-        }
-
-
-
-        console.log( "fim do IF, arrey completo: " + this._operation);
         this.getLastOperation();
 
     
@@ -86,6 +123,7 @@ class CalcControler{
     }
         cancelEntry(){
         this._operation.pop();
+
     }
     setError(){
         this._displayEl = "ERROR";
@@ -139,9 +177,7 @@ class CalcControler{
             case '8':
             case '9':
             case '0':
-                this.addOperation(parseInt(value));    
-       
-
+                this.addOperation(parseInt(value));  
             default:
             this.setError();                
             break;
@@ -154,8 +190,7 @@ class CalcControler{
         buttons.forEach((btn, index) =>{
             this.addEventListenerAll(btn, "click drag", e =>{
                 let textBtn = btn.className.baseVal.replace("btn-", "");
-                console.log(textBtn) ;
-                
+                console.log("entrada: " + textBtn) ;
                 this.execBtn(textBtn);
             });
 
@@ -197,11 +232,11 @@ class CalcControler{
 
 
     get displayCalc(){
-        return this._displayCalc;
+        return this._displayCalcEl.innerHTML;
     }
 
-    set displayCalc(valor){
-        this._displayCalc = valor;
+    set displayCalc(value){
+        this._displayCalc.innerHTML = value;
     }
 
 
@@ -209,8 +244,8 @@ class CalcControler{
         return new Date();
     }
 
-    set currentDate(valor){
-        this._currentDate = valor;
+    set currentDate(value){
+        this._currentDate = value;
     }
 
 }
