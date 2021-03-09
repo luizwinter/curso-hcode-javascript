@@ -56,8 +56,65 @@ class CalcControler{
         }
     }
     
+<<<<<<< Updated upstream
     calc(){
         let last = this._operation.pop();
+=======
+    
+    getResult(){
+        return eval(this._operation.join(""));
+    }
+    
+    
+    
+    
+    calc(){
+        let last = '';
+        
+        this._lastOperator = this.getLastItem(true);
+        
+        if(this._operation.length < 3){
+            
+            let firstItem = this._operation[0];
+            this._operation = [firstItem, this._lastOperator, this._lastNumber];
+            
+        }
+
+        
+        if(this._operation.length > 3){
+            
+            last = this._operation.pop();
+            
+            this._lastNumber = this.getResult();
+
+        }else if(this._operation.length == 3){
+                        
+            this._lastNumber = this.getLastItem(false);
+
+        }
+        
+        console.log("lastoperator" + this._lastOperator);
+        console.log("lastnumber" + this._lastNumber);
+
+        
+        
+        let result = this.getResult();
+
+        
+        if(last == '%'){
+            
+            result = result /100;
+            this._operation = [result];            
+            
+        }else {
+            
+            this._operation = [result]
+            
+            if(last){
+                this._operation.push(last);
+            }
+        }
+>>>>>>> Stashed changes
         
         let result = eval(this._operation.join(""));
         this._operation = [result, last]
@@ -66,9 +123,56 @@ class CalcControler{
     }
     
     
-    setLastNumberToDisplay(){
-        let lastNumber;
+<<<<<<< Updated upstream
+=======
+    getLastItem(isOperator = true){
         
+    }
+    
+    
+    getLastItem(isOperator = true){
+        let lastItem ;
+         for(let i = this._operation.length-1; i >= 0; i--){
+             
+             if(isOperator){
+                 
+                    if(this.isOperator(this._operation[i])){
+                    
+                     lastItem = this._operation[i];
+
+                     break;
+                 }
+                 
+             }else{
+                 
+                      if(!this.isOperator(this._operation[i])){
+                    
+                     lastItem = this._operation[i];
+                          
+
+                     break;
+                 }
+                 
+             }
+             
+             
+         }
+
+        if(!lastItem){
+            
+            lastItem = (isOperator) ? this._lastOperator : this._lastNumber;
+            
+        }
+        
+        return lastItem;
+        
+    }
+    
+>>>>>>> Stashed changes
+    setLastNumberToDisplay(){
+        let lastNumber = this.getLastItem(false);
+        
+<<<<<<< Updated upstream
         for(let i = this._operation.length-1; i >= 0; i--){
             if(!this.isOperator(this._operation[i])){
                 
@@ -77,6 +181,11 @@ class CalcControler{
                 break;
             }
         }
+=======
+        
+        if(!lastNumber) lastNumber = 0;
+        
+>>>>>>> Stashed changes
         document.querySelector("#display").innerHTML = lastNumber;
     }
     
@@ -89,11 +198,7 @@ class CalcControler{
 
                 this.setLastOperation(value);
                 //troca o operador
-            }else if(isNaN(value)){
-
-                console.log(value);
-
-            } else {
+            }else {
 
                 this.pushOperation(value);
                 this.setLastNumberToDisplay();                
@@ -108,7 +213,7 @@ class CalcControler{
                 
             } else {
                      let newValue = this.getLastOperation().toString() + value.toString();
-                    this.setLastOperation(parseInt(newValue));
+                    this.setLastOperation(newValue);
                 
                 this.setLastNumberToDisplay();
             }}
@@ -120,6 +225,12 @@ class CalcControler{
     
     clearAll(){
         this._operation = [];
+<<<<<<< Updated upstream
+=======
+        this._lastNumber= '';
+        this._lastOperator= '';
+        this.setLastNumberToDisplay();
+>>>>>>> Stashed changes
     }
         cancelEntry(){
         this._operation.pop();
@@ -127,6 +238,27 @@ class CalcControler{
     }
     setError(){
         this._displayEl = "ERROR";
+    }
+    
+    
+    addDot(){
+        
+        let lastOperation = this.getLastOperation();
+        
+        if(typeof lastOperation === 'string' && lastOperation.split('').indexOf('.') > -1)
+            return;
+
+        if(this.isOperator(lastOperation) || !lastOperation){
+            this.pushOperation('0.');
+            console.log("nao parou1");
+        } else{
+            
+            this.setLastOperation(lastOperation.toString() + '.');
+                    console.log("nao parou2");
+
+            
+        }
+            this.setLastNumberToDisplay();
     }
     
     
@@ -164,8 +296,7 @@ class CalcControler{
                 console.log(this._operation);
                 break;
             case 'ponto':
-                this.addOperation('.');
-                console.log(this._operation);
+                this.addDot();
                 break;
             case '1':
             case '2':
@@ -190,7 +321,6 @@ class CalcControler{
         buttons.forEach((btn, index) =>{
             this.addEventListenerAll(btn, "click drag", e =>{
                 let textBtn = btn.className.baseVal.replace("btn-", "");
-                console.log("entrada: " + textBtn) ;
                 this.execBtn(textBtn);
             });
 
